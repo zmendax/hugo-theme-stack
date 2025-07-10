@@ -2,9 +2,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     AV.init({
-        appId: "{{ .Site.Params.lean_app_id }}",
-        appKey: "{{ .Site.Params.lean_app_key }}",
-        serverURLs: "{{ .Site.Params.lean_server_url }}"
+        appId: "{{ getenv "LEAN_APP_ID" }}",
+        appKey: "{{ getenv "LEAN_APP_KEY" }}",
+        serverURLs: "{{ getenv "LEAN_SERVER_URL" }}",
     });
 
     const Counter = AV.Object.extend("Counter");
