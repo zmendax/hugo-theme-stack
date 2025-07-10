@@ -1,0 +1,92 @@
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AV.init({
+        appId: "{{ .Site.Params.lean_app_id }}",
+        appKey: "{{ .Site.Params.lean_app_key }}",
+        serverURLs: "{{ .Site.Params.lean_server_url }}"
+    });
+
+    const Counter = AV.Object.extend("Counter");
+
+    // 获取访问次数
+    function getViewCount(url, callback) {
+        const query = new AV.Query("Counter");
+        query.equalTo("url", url);
+        query.first().then((object) => {
+            if (object) {
+                callback(object.get("times"));
+            } else {
+                callback(0);
+            }
+        }).catch(() => {
+            callback(0);
+        });
+    }
+
+    // 增加访问次数
+    function incrementViewCount(url, callback) {
+        const query = new AV.Query("Counter");
+        query.equalTo("url", url);
+        query.first().then((object) => {
+            if (object) {
+                object.increment("times", 1);
+                object.save().then((obj) => {
+                    callback(obj.get("times"));
+                });
+            } else {
+                const newCounter = new Counter();
+                const acl = new AV.ACL();
+                acl.setPublicReadAccess(true);
+                acl.setPublicWriteAccess(true);
+                newCounter.setACL(acl);
+                newCounter.set("title", document.title);
+                newCounter.set("url", url);
+                newCounter.set("times", 1);
+                newCounter.save().then(() => {
+                    callback(1);
+                });
+            }
+        }).catch(() => {
+            callback(0);
+        });
+    }
+
+    const path = window.location.pathname;
+    const isArticlePage = document.body.classList.contains('article-page');
+    
+    // 处理详情页的访问次数
+    const viewCountElement = document.querySelector(".view-count");
+    if (viewCountElement && isArticlePage) {
+        // 详情页：增加访问次数
+        incrementViewCount(path, function(count) {
+            viewCountElement.innerText = count + " 次阅读";
+        });
+    }
+    
+    // 处理列表页的访问次数（包括首页）
+    const listViewCountElements = document.querySelectorAll(".view-count");
+    if (listViewCountElements.length > 0 && !isArticlePage) {
+        listViewCountElements.forEach(function(element) {
+            let url = null;
+            
+            // 优先使用 data-url 属性（compact.html）
+            if (element.hasAttribute('data-url')) {
+                url = element.getAttribute('data-url');
+            } else {
+                // 备用方案：从文章链接中获取URL（default.html）
+                const articleLink = element.closest('article')?.querySelector('.article-title a[href]');
+                if (articleLink) {
+                    url = new URL(articleLink.href).pathname;
+                }
+            }
+            
+            if (url) {
+                getViewCount(url, function(count) {
+                    element.innerText = count + " 次阅读";
+                });
+            }
+        });
+    }
+});
+</script>

@@ -8,6 +8,12 @@
                 <time datetime='{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}'>
                     {{- .Date | time.Format (or .Site.Params.dateFormat.published "Jan 02, 2006") -}}
                 </time>
+                {{ if .Site.Params.article.readingTime }}
+                    <span>·</span>
+                    <span>{{ T "article.readingTime" .ReadingTime }}</span>
+                {{ end }}
+                {{ partial "helper/icon" "eye" }}
+                <span class="view-count" data-url="{{ .RelPermalink }}">加载...</span>
             </footer>
         </div>
 

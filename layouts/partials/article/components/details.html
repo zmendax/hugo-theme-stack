@@ -44,7 +44,14 @@
                     {{ T "article.readingTime" .ReadingTime }}
                 </time>
             </div>
+            <div>
+                {{ partial "helper/icon" "eye" }}
+                <time class="article-time--readers">
+                    <span class="view-count">加载中...</span>
+                </time>
+            </div>
         {{ end }}
+
     </footer>
     {{ end }}
 
