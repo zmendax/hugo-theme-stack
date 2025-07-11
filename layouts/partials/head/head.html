@@ -5,6 +5,8 @@
 <meta name='description' {{ printf "content=%q" $description | safeHTMLAttr }}>
 {{ with .Params.Keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
 
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 {{- $title := partial "data/title" . -}}
 <title>{{ $title }}</title>
 

@@ -13,7 +13,9 @@
                     <span>{{ T "article.readingTime" .ReadingTime }}</span>
                 {{ end }}
                 {{ partial "helper/icon" "eye" }}
-                <span class="view-count" data-url="{{ .RelPermalink }}">加载...</span>
+                <span id="busuanzi_container_page_pv">本页访问量：<span id="busuanzi_value_page_pv"></span>次</span>
+
+                <!-- <span class="view-count" data-url="{{ .RelPermalink }}">加载...</span> -->
             </footer>
         </div>
 
